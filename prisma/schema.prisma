@@ -1,0 +1,88 @@
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+}
+enum ClaimStatus {
+ PENDING
+ REDEEMED
+ CANCELLED
+}
+model Admin {
+ id String @id @default(cuid())
+ email String @unique
+ name String
+ passwordHash String
+ role String @default("ADMIN")
+ createdAt DateTime @default(now())
+ auditLogs AuditLog[]
+}
+model Shop {
+ id String @id @default(cuid())
+ shopName String
+ shopCode String @unique
+ address String?
+ phone String?
+ status Boolean @default(true)
+ createdAt DateTime @default(now())
+ participations Participation[]
+ @@index([status])
+}
+model Customer {
+ id String @id @default(cuid())
+ name String
+ phone String
+ normalizedPhone String @unique
+ createdAt DateTime @default(now())
+ participations Participation[]
+}
+model Participation {
+ id String @id @default(cuid())
+ claimId String @unique
+ invoiceNumber String @unique
+ customerId String
+ shopId String?
+ brand String
+ priceRange String
+ assignedPrize String
+ status ClaimStatus @default(PENDING)
+ createdAt DateTime @default(now())
+ scratchedAt DateTime?
+ redeemedAt DateTime?
+ customer Customer @relation(fields:[customerId],references:[id])
+ shop Shop? @relation(fields:[shopId],references:[id])
+ @@index([createdAt])
+ @@index([shopId,createdAt])
+ @@index([status])
+}
+model Prize {
+ id String @id @default(cuid())
+ name String @unique
+ active Boolean @default(true)
+ createdAt DateTime @default(now())
+}
+model PrizeRule {
+ id String @id @default(cuid())
+ key String @unique
+ label String
+ prizeText String
+ active Boolean @default(true)
+ priority Int @default(0)
+ updatedAt DateTime @updatedAt
+}
+model Setting {
+ key String @id
+ value String
+ updatedAt DateTime @updatedAt
+}
+model AuditLog {
+ id String @id @default(cuid())
+ adminId String?
+ action String
+ metadata Json?
+ createdAt DateTime @default(now())
+ admin Admin? @relation(fields:[adminId],references:[id])
+ @@index([createdAt])
+}

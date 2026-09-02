@@ -1,0 +1,1 @@
+import './style.css';export const metadata={title:'MC Mobicare | Scratch & Win',description:'Shop & get a surprise gift.'};export default function L({children}:{children:React.ReactNode}){return <html lang="en"><body>{children}</body></html>}
