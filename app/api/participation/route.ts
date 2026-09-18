@@ -2,7 +2,7 @@ import { randomInt } from 'node:crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { entry } from '@/lib/validation';
-import { ENTRY_LEVEL_GIFTS, keyFor, prizeFor } from '@/lib/prizes';
+import { ACCESSORY_GIFTS, ENTRY_LEVEL_GIFTS, keyFor, prizeFor } from '@/lib/prizes';
 
 export async function POST(req: NextRequest) {
   if (!process.env.DATABASE_URL) return NextResponse.json({ error: 'Campaign is temporarily unavailable. Please ask a store team member for assistance.' }, { status: 503 });
@@ -18,7 +18,9 @@ export async function POST(req: NextRequest) {
     if (data.shopCode && !shop) return NextResponse.json({ error: 'Invalid QR/shop' }, { status: 404 });
 
     let prize: string;
-    if (data.brand !== 'Apple' && data.brand !== 'Laptop' && data.priceRange === '₹0 - ₹14,999') {
+    if (data.brand === 'Accessories') {
+      prize = ACCESSORY_GIFTS[randomInt(ACCESSORY_GIFTS.length)];
+    } else if (data.brand !== 'Apple' && data.brand !== 'Laptop' && data.priceRange === '₹0 - ₹14,999') {
       prize = ENTRY_LEVEL_GIFTS[randomInt(ENTRY_LEVEL_GIFTS.length)];
     } else {
       const rule = await prisma.prizeRule.findUnique({ where: { key: keyFor(data.brand, data.priceRange) } });
