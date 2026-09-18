@@ -34,9 +34,10 @@ model Customer {
  id String @id @default(cuid())
  name String
  phone String
- normalizedPhone String @unique
+ normalizedPhone String
  createdAt DateTime @default(now())
  participations Participation[]
+ @@index([normalizedPhone])
 }
 model Participation {
  id String @id @default(cuid())

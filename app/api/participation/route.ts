@@ -1,2 +1,38 @@
-import{NextRequest,NextResponse}from'next/server';import{prisma}from'@/lib/prisma';import{entry}from'@/lib/validation';import{keyFor,prizeFor}from'@/lib/prizes';
-export async function POST(req:NextRequest){if(!process.env.DATABASE_URL)return NextResponse.json({error:'Campaign is temporarily unavailable. Please ask a store team member for assistance.'},{status:503});try{const d=entry.parse(await req.json());const off=await prisma.setting.findUnique({where:{key:'campaignStatus'}});if(off?.value==='disabled')return NextResponse.json({error:'Campaign is unavailable'},{status:403});const old=await prisma.customer.findUnique({where:{normalizedPhone:d.phone},include:{participations:{take:1}}});if(old?.participations[0])return NextResponse.json({error:'You have already participated in Scratch & Win.',claimId:old.participations[0].claimId},{status:409});const usedInvoice=await prisma.participation.findUnique({where:{invoiceNumber:d.invoiceNumber}});if(usedInvoice)return NextResponse.json({error:'This invoice number has already been used for Scratch & Win.',claimId:usedInvoice.claimId},{status:409});const shop=d.shopCode?await prisma.shop.findFirst({where:{shopCode:d.shopCode,status:true}}):null;if(d.shopCode&&!shop)return NextResponse.json({error:'Invalid QR/shop'},{status:404});const rule=await prisma.prizeRule.findUnique({where:{key:keyFor(d.brand,d.priceRange)}});const prize=rule?.active?rule.prizeText:prizeFor(d.brand,d.priceRange);const out=await prisma.$transaction(async(tx:any)=>{const c=await tx.customer.create({data:{name:d.name,phone:d.phone,normalizedPhone:d.phone}});const n=await tx.participation.count();const p=await tx.participation.create({data:{claimId:`SW-${new Date().getFullYear()}-${String(n+1).padStart(6,'0')}`,invoiceNumber:d.invoiceNumber,customerId:c.id,shopId:shop?.id,brand:d.brand,priceRange:d.priceRange,assignedPrize:prize}});return p});return NextResponse.json({claimId:out.claimId,prize:out.assignedPrize},{status:201})}catch(e:any){if(e?.code==='P2002')return NextResponse.json({error:'This mobile number or invoice number has already been used for Scratch & Win.'},{status:409});return NextResponse.json({error:'Please check your details and try again.'},{status:400})}}
+import { randomInt } from 'node:crypto';
+import { NextRequest, NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+import { entry } from '@/lib/validation';
+import { ENTRY_LEVEL_GIFTS, keyFor, prizeFor } from '@/lib/prizes';
+
+export async function POST(req: NextRequest) {
+  if (!process.env.DATABASE_URL) return NextResponse.json({ error: 'Campaign is temporarily unavailable. Please ask a store team member for assistance.' }, { status: 503 });
+  try {
+    const data = entry.parse(await req.json());
+    const campaign = await prisma.setting.findUnique({ where: { key: 'campaignStatus' } });
+    if (campaign?.value === 'disabled') return NextResponse.json({ error: 'Campaign is unavailable' }, { status: 403 });
+
+    const usedInvoice = await prisma.participation.findUnique({ where: { invoiceNumber: data.invoiceNumber } });
+    if (usedInvoice) return NextResponse.json({ error: 'This invoice number has already been used for Scratch & Win.', claimId: usedInvoice.claimId }, { status: 409 });
+
+    const shop = data.shopCode ? await prisma.shop.findFirst({ where: { shopCode: data.shopCode, status: true } }) : null;
+    if (data.shopCode && !shop) return NextResponse.json({ error: 'Invalid QR/shop' }, { status: 404 });
+
+    let prize: string;
+    if (data.brand !== 'Apple' && data.brand !== 'Laptop' && data.priceRange === '₹0 - ₹14,999') {
+      prize = ENTRY_LEVEL_GIFTS[randomInt(ENTRY_LEVEL_GIFTS.length)];
+    } else {
+      const rule = await prisma.prizeRule.findUnique({ where: { key: keyFor(data.brand, data.priceRange) } });
+      prize = rule?.active ? rule.prizeText : prizeFor(data.brand, data.priceRange);
+    }
+
+    const participation = await prisma.$transaction(async tx => {
+      const customer = await tx.customer.create({ data: { name: data.name, phone: data.phone, normalizedPhone: data.phone } });
+      const count = await tx.participation.count();
+      return tx.participation.create({ data: { claimId: `SW-${new Date().getFullYear()}-${String(count + 1).padStart(6, '0')}`, invoiceNumber: data.invoiceNumber, customerId: customer.id, shopId: shop?.id, brand: data.brand, priceRange: data.priceRange, assignedPrize: prize } });
+    });
+    return NextResponse.json({ claimId: participation.claimId, prize: participation.assignedPrize }, { status: 201 });
+  } catch (error: any) {
+    if (error?.code === 'P2002') return NextResponse.json({ error: 'This invoice number has already been used for Scratch & Win.' }, { status: 409 });
+    return NextResponse.json({ error: 'Please check your details and try again.' }, { status: 400 });
+  }
+}
