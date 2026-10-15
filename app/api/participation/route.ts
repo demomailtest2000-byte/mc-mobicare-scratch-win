@@ -2,7 +2,7 @@ import { randomInt } from 'node:crypto';
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { entry } from '@/lib/validation';
-import { ACCESSORY_GIFTS, ENTRY_LEVEL_GIFTS, keyFor, prizeFor } from '@/lib/prizes';
+import { ACCESSORY_GIFTS, ENTRY_LEVEL_GIFTS, MOBILE_BRANDS, keyFor, prizeFor } from '@/lib/prizes';
 
 export async function POST(req: NextRequest) {
   if (!process.env.DATABASE_URL) return NextResponse.json({ error: 'Campaign is temporarily unavailable. Please ask a store team member for assistance.' }, { status: 503 });
@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     let prize: string;
     if (data.brand === 'Accessories') {
       prize = ACCESSORY_GIFTS[randomInt(ACCESSORY_GIFTS.length)];
-    } else if (data.brand !== 'Apple' && data.brand !== 'Laptop' && data.brand !== 'LED' && data.brand !== 'Refrigerator' && data.brand !== 'Washing Machine' && data.brand !== 'Inverter' && data.brand !== 'AC' && data.priceRange === '₹0 - ₹19,999') {
+    } else if (!MOBILE_BRANDS.includes(data.brand as typeof MOBILE_BRANDS[number]) && data.brand !== 'Apple' && data.brand !== 'Laptop' && data.brand !== 'LED' && data.brand !== 'Refrigerator' && data.brand !== 'Washing Machine' && data.brand !== 'Inverter' && data.brand !== 'AC' && data.priceRange === '₹0 - ₹19,999') {
       prize = ENTRY_LEVEL_GIFTS[randomInt(ENTRY_LEVEL_GIFTS.length)];
     } else {
       const rule = await prisma.prizeRule.findUnique({ where: { key: keyFor(data.brand, data.priceRange) } });
