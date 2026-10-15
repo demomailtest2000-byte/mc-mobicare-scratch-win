@@ -38,7 +38,7 @@ const rules = [
   ['AC_PRICE_2', 'AC ₹30,000 – ₹44,999', 'Sling Bag + 2 Ltr Sipper + Earbuds'],
   ['AC_PRICE_3', 'AC ₹45,000 – ₹59,999', 'Sling Bag + Earbuds + 2 Ltr Sipper + Flask Bottle'],
   ['AC_PRICE_4', 'AC ₹60,000 and above', 'Sling Bag + Mobicare Flask + Earbuds + 2 Ltr Sipper + Chopper'],
-  ['Apple', 'Apple override', 'Backpack + Chopper'],
+  ['Apple', 'Apple override', 'Kettle + Earbuds + Sling Bag'],
   ['Laptop', 'Laptop override', 'Backpack + Keyboard + Mouse + Laptop Speaker'],
   ['ACCESSORIES', 'Accessories random', 'Sling Bag / 2 Ltr Sipper / Bottle Set / Gift Set'],
 ] as const;
