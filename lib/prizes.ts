@@ -1,4 +1,4 @@
-export const BRANDS=['OPPO','vivo','Samsung','Redmi','Acer','Apple','Laptop','LED','Refrigerator','Washing Machine','AC','Inverter','Home Theater','Accessories','Others'] as const;
+export const BRANDS=['OPPO','vivo','Samsung','Redmi','Acer','Apple','Laptop','LED','Refrigerator','Washing Machine','AC','Inverter','Accessories','Others'] as const;
 export const RANGES=['₹0 - ₹14,999','₹15,000 - ₹24,999','₹25,000 - ₹39,999','₹40,000 - ₹54,999','₹55,000 and above'] as const;
 const map:Record<string,string>={'₹0 - ₹14,999':'Sipper Bottle','₹15,000 - ₹24,999':'Buds','₹25,000 - ₹39,999':'Backpack + Chopper + Tiffin Box','₹40,000 - ₹54,999':'Bluetooth Speaker + Electric Kettle + Backpack + Sipper Bottle','₹55,000 and above':'Tumbler + Sipper Bottle + Chopper + Sling Bag + Bluetooth Speaker'};
 export const LED_PRIZES:Record<string,string>={'₹0 - ₹14,999':'Sling Bag + Gift Set Combo','₹15,000 - ₹24,999':'Sling Bag + Chopper + Gift Set Combo','₹25,000 - ₹39,999':'Sling Bag + Neckband + Bottle Set + 2 Ltr Sipper + Chopper','₹40,000 - ₹54,999':'Sling Bag + Sound Bar + 2 Ltr Sipper + Flask Bottle','₹55,000 and above':'Sling Bag + Sound Bar + Mobicare Flask + Earbuds'};
