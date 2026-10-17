@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-const sparks = Array.from({ length: 32 }, (_, index) => ({
+const sparks = Array.from({ length: 48 }, (_, index) => ({
   left: `${8 + ((index * 23) % 84)}%`,
   top: `${10 + ((index * 37) % 50)}%`,
   delay: `${(index % 8) * 0.09}s`,
@@ -24,6 +24,8 @@ export function Celebration() {
   }, []);
   if (!visible) return null;
   return <div className="celebration" aria-hidden="true">
+    <div className="celebration-burst">🎉</div>
+    <span className="celebration-firework firework-one">✦</span><span className="celebration-firework firework-two">✦</span><span className="celebration-firework firework-three">✦</span>
     {sparks.map((spark, index) => <i key={index} className="celebration-spark" style={{ left: spark.left, top: spark.top, animationDelay: spark.delay, backgroundColor: spark.color }} />)}
     {balloons.map((balloon, index) => <i key={index} className="celebration-balloon" style={{ left: balloon.left, backgroundColor: balloon.color, animationDelay: balloon.delay }} />)}
   </div>;
