@@ -10,6 +10,9 @@ it('applies all requested overrides', () => {
   expect(ENTRY_LEVEL_GIFTS).toEqual(['Sipper Bottle']);
   expect(ACCESSORY_GIFTS).toEqual(['Sling Bag', '2 Ltr Sipper', 'Bottle Set', 'Gift Set']);
   expect(LED_PRIZES['₹0 - ₹19,999']).toBe('Sling Bag + Gift Set Combo');
+  expect(LED_PRIZES['₹45,000 - ₹59,999']).toContain('Tumbler');
+  expect(LED_PRIZES['₹45,000 - ₹59,999']).not.toContain('Flask Bottle');
+  expect(LED_PRIZES['₹60,000 and above']).toContain('Chopper');
   expect(REFRIGERATOR_PRIZES['₹60,000 and above']).toContain('Mobicare Flask');
   expect(WASHING_MACHINE_PRIZES).toEqual(REFRIGERATOR_PRIZES);
   expect(INVERTER_PRIZES['₹0 - ₹19,999']).toBe('Sling Bag');
