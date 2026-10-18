@@ -20,6 +20,10 @@ it('applies all requested overrides', () => {
   expect(prizeFor('Inverter', '₹20,000 - ₹29,999')).toBe('Sling Bag + Bottle Set Combo');
   expect(prizeFor('AC', '₹30,000 - ₹44,999')).toContain('Earbuds');
   expect(MOBILE_PRIZES['₹60,000 and above']).toContain('ANC Earbuds');
+  expect(MOBILE_PRIZES['₹20,000 - ₹29,999']).toContain('360° Mobile Stand');
+  expect(MOBILE_PRIZES['₹30,000 - ₹44,999']).toContain('360° Mobile Stand');
+  expect(MOBILE_PRIZES['₹45,000 - ₹59,999']).toContain('BT Speaker');
+  expect(MOBILE_PRIZES['₹60,000 and above']).toContain('2 Ltr Sipper');
   expect(prizeFor('OPPO', '₹0 - ₹19,999')).toBe('Earbuds + Sling Bag');
   expect(prizeFor('vivo', '₹20,000 - ₹29,999')).toContain('2 Years Warranty');
   expect(prizeFor('Samsung', '₹45,000 - ₹59,999')).toContain('Noise Smart Watch');
