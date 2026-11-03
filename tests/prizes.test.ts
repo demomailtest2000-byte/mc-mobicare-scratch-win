@@ -33,4 +33,6 @@ it('applies all requested overrides', () => {
   expect(prizeFor('Redmi', '₹60,000 and above')).toContain('Kettle');
   expect(prizeFor('Apple', '₹60,000 and above')).toBe('Kettle + Earbuds + Sling Bag');
   expect(prizeFor('Laptop', '₹0 - ₹19,999')).toContain('Keyboard');
+  expect(prizeFor('Others', '₹0 - ₹19,999')).toBe('Gift Set + Chopper + Tumbler');
+  expect(prizeFor('Others', '₹60,000 and above')).toBe('Gift Set + Chopper + Tumbler');
 });

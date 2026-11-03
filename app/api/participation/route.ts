@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     let prize: string;
     if (data.brand === 'Accessories') {
       prize = ACCESSORY_GIFTS[randomInt(ACCESSORY_GIFTS.length)];
-    } else if (!MOBILE_BRANDS.includes(data.brand as typeof MOBILE_BRANDS[number]) && data.brand !== 'Apple' && data.brand !== 'Laptop' && data.brand !== 'LED' && data.brand !== 'Refrigerator' && data.brand !== 'Washing Machine' && data.brand !== 'Inverter' && data.brand !== 'AC' && data.priceRange === '₹0 - ₹19,999') {
+    } else if (!MOBILE_BRANDS.includes(data.brand as typeof MOBILE_BRANDS[number]) && data.brand !== 'Apple' && data.brand !== 'Laptop' && data.brand !== 'Others' && data.brand !== 'LED' && data.brand !== 'Refrigerator' && data.brand !== 'Washing Machine' && data.brand !== 'Inverter' && data.brand !== 'AC' && data.priceRange === '₹0 - ₹19,999') {
       prize = ENTRY_LEVEL_GIFTS[randomInt(ENTRY_LEVEL_GIFTS.length)];
     } else {
       const rule = await prisma.prizeRule.findUnique({ where: { key: keyFor(data.brand, data.priceRange) } });
